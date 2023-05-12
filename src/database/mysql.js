@@ -11,10 +11,14 @@ const runSQL = (sql) => {
       if (error) reject(error)
       else resolve(result)
     })
-    connection.end()
   })
 }
 
+const dbEnd = () => {
+  connection.end()
+}
+
 module.exports = {
-  runSQL
+  runSQL,
+  dbEnd
 }

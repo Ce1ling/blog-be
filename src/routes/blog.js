@@ -1,52 +1,55 @@
 const express = require('express')
-const { SuccessModel } = require('../models')
+const { SuccessModel, FailModel } = require('../models')
 const { getBlogList, getBlogDetails, createBlog, updateBlog, deleteBlog } = require('../controllers/blog')
-const { runSQL } = require('../database/mysql')
 
 const router = express.Router()
 
 // 获取博客列表
 router.get('/api/blog', (request, response) => {
   const { author, keyword } = request.query
-  const data = getBlogList(author, keyword)
-  runSQL(`SELECT * FROM blog_list`).then(result => {
-    console.log(result)
-  }).catch(error => {
-    console.log(error)
-  })
 
-  const msg = '成功'
-  const res = new SuccessModel(data, msg)
-  response.send(res)
+  getBlogList(author, keyword).then(r => {
+    response.send(new SuccessModel(r, '获取成功'))
+  }).catch(err => {
+    response.send(new FailModel(err, '获取失败'))
+  })
 })
 
 // 获取博客详情
 router.get('/api/blog/details', (request, response) => {
-  const data = getBlogDetails(request.query.id)
-  const msg = '成功'
-  const res = new SuccessModel(data, msg)
-  response.send(res)
+  getBlogDetails(request.query.id).then(r => {
+    response.send(new SuccessModel(r, '获取成功'))
+  }).catch(err => {
+    response.send(new FailModel(err, '获取失败'))
+  })
 })
 
 // 创建博客
 router.post('/api/blog', (request, response) => {
   const { title, content } = request.body
-  const data = createBlog(title, content)
-  const res = new SuccessModel(data)
-  response.send(res)
+  createBlog(title, content).then(r => {
+    response.send(new SuccessModel(r, '创建成功'))
+  }).catch(err => {
+    response.send(new FailModel(err, '创建失败'))
+  })
 })
 
 // 更新博客
 router.put('/api/blog', (request, response) => {
-  const data = updateBlog(request.query.id, request.body)
-  const res = new SuccessModel(data)
-  response.send(res)
+  updateBlog(request.query.id, request.body).then(r => {
+    response.send(new SuccessModel(r, '更新成功'))
+  }).catch(err => {
+    response.send(new FailModel(err, '更新失败'))
+  })
 })
 
 // 删除博客
 router.delete('/api/blog', (request, response) => {
-  const data = deleteBlog(request.body.id)
-  response.send(new SuccessModel(data))
+  deleteBlog(request.query.id).then(r => {
+    response.send(new SuccessModel(r, '删除成功'))
+  }).catch(err => {
+    response.send(new FailModel(err, '删除失败'))
+  })
 })
 
 module.exports = router
