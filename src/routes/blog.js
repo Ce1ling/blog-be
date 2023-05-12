@@ -1,6 +1,7 @@
 const express = require('express')
 const { SuccessModel } = require('../models')
 const { getBlogList, getBlogDetails, createBlog, updateBlog, deleteBlog } = require('../controllers/blog')
+const { runSQL } = require('../database/mysql')
 
 const router = express.Router()
 
@@ -8,6 +9,12 @@ const router = express.Router()
 router.get('/api/blog', (request, response) => {
   const { author, keyword } = request.query
   const data = getBlogList(author, keyword)
+  runSQL(`SELECT * FROM blog_list`).then(result => {
+    console.log(result)
+  }).catch(error => {
+    console.log(error)
+  })
+
   const msg = '成功'
   const res = new SuccessModel(data, msg)
   response.send(res)
