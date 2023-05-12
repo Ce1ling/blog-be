@@ -5,8 +5,9 @@ const app = express()
 
 const PORT = 3211
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 routes.forEach(route => app.use(route))
-
 app.use((_, response, next) => {
   response.send({ code: -1, msg: '404 Not Found' })
   next()
