@@ -1,8 +1,16 @@
 const express = require('express')
+const routes = require('./routes')
 
 const app = express()
 
 const PORT = 3211
+
+routes.forEach(route => app.use(route))
+
+app.use((_, response, next) => {
+  response.send({ code: -1, msg: '404 Not Found' })
+  next()
+})
 
 app.all('*', (request, response, next) => {
   response.header('Access-Control-Allow-Origin', request.headers.origin)
@@ -11,16 +19,6 @@ app.all('*', (request, response, next) => {
   response.header('Content-Type', 'application/json;charset=utf-8')
   next()
 })
-
-app.get('/', (request, response) => {
-  response.send({
-    code: 0,
-    msg: 'ok'
-  })
-})
-
-
-
 
 app.listen(PORT, (error) => {
   if (error) {
