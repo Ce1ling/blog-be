@@ -7,8 +7,8 @@ const PORT = 3211
 
 app.all('*', (request, response, next) => {
   response.header('Access-Control-Allow-Origin', request.headers.origin)
-  response.header('Control-Access-Allowe-Methods', request.method)
-  response.header('Control-Access-Allowe-Headers', 'Content-Type')
+  response.header('Access-Control-Allow-Methods', request.headers['access-control-request-method'])
+  response.header('Access-Control-Allow-Headers', 'Content-Type')
   response.header('Content-Type', 'application/json;charset=utf-8')
   next()
 })
