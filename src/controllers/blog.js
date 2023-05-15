@@ -4,7 +4,7 @@ const { runSQL } = require('../database/mysql')
  * 获取 blog 数据
  */
 const getBlogList = (author, keyword) => {
-  return runSQL(`SELECT * FROM blog_list;`)
+  return runSQL(`SELECT * FROM blog_list ORDER BY create_at DESC;`)
 }
 
 /**
