@@ -16,10 +16,21 @@ router.get('/api/blog', (_, response) => {
 
 // 获取博客详情
 router.get('/api/blog/details', (request, response) => {
-  getBlogDetails(request.query.id).then(data => {
-    response.send(new SuccessModel('获取成功', data[0]))
+  const { id } = request.query
+
+  if (!id) {
+    response.send(new FailModel('错误, 请传递 id'))
+    return
+  }
+
+  getBlogDetails(id).then(data => {
+    if (data.length) {
+      response.send(new SuccessModel('获取成功', data[0]))
+      return
+    }
+    response.send(new FailModel('未找到, 请检查 id'))
   }).catch(err => {
-    response.send(new FailModel('获取失败'))
+    response.send(new FailModel('获取失败', err.sqlMessage))
     console.error(err)
   })
 })
