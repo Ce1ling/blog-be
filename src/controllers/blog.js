@@ -3,7 +3,7 @@ const { runSQL } = require('../database/mysql')
 /**
  * 获取 blog 数据
  */
-const getBlogList = (author, keyword) => {
+const getBlogList = () => {
   return runSQL(`SELECT * FROM blog_list ORDER BY create_at DESC;`)
 }
 
@@ -29,7 +29,11 @@ const createBlog = (title, content) => {
  * 更新 blog
  */
 const updateBlog = (id, { title, content }) => {
-  const sql = `UPDATE blog_list SET title='${title}', content='${content}' WHERE id=${id};`
+  const sql = `
+    UPDATE blog_list 
+    SET title='${title}', content='${content}', update_at=UNIX_TIMESTAMP()
+    WHERE id=${id};
+  `
   return runSQL(sql)
 }
 

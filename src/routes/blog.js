@@ -5,10 +5,8 @@ const { getBlogList, getBlogDetails, createBlog, updateBlog, deleteBlog } = requ
 const router = express.Router()
 
 // 获取博客列表
-router.get('/api/blog', (request, response) => {
-  const { author, keyword } = request.query
-
-  getBlogList(author, keyword).then(r => {
+router.get('/api/blog', (_, response) => {
+  getBlogList().then(r => {
     response.send(new SuccessModel(r, '获取成功'))
   }).catch(err => {
     response.send(new FailModel(err, '获取失败'))
