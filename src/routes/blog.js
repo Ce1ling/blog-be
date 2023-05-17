@@ -66,12 +66,35 @@ router.post('/api/blog', (request, response) => {
 
 // 更新博客
 router.put('/api/blog', (request, response) => {
-  updateBlog(request.query.id, request.body).then(r => {
-    response.send(new SuccessModel('更新成功', r))
-  }).catch(err => {
-    response.send(new FailModel('更新失败'))
-    console.error(err)
-  })
+  const { 
+    query: { id }, 
+    body: { title, content },
+    body,
+  } = request
+
+  if (!id || !title || !content) {
+    response.send(new FailModel('更新失败, 请检查参数是否完整'))
+    return
+  }
+
+  if (!isTargetType([id, title, content], 'string')) {
+    response.send(new FailModel('更新失败, id, title, content 只能为 string 类型'))
+    return
+  }
+
+  updateBlog(id, body)
+    .then(() => getBlogDetails(id))
+    .then(data => {
+      if (data.length) {
+        response.send(new SuccessModel('更新成功', data[0]))
+        return
+      }
+      response.send(new FailModel('没有数据被更新, 请检查 id'))
+    })
+    .catch(err => {
+      response.send(new FailModel('更新失败', err.sqlMessage))
+      console.error(err)
+    })
 })
 
 // 删除博客
