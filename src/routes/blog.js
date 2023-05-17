@@ -1,6 +1,13 @@
 const express = require('express')
 const { SuccessModel, FailModel } = require('../models')
-const { getBlogList, getBlogDetails, createBlog, updateBlog, deleteBlog } = require('../controllers/blog')
+const { 
+  getBlogList, 
+  getBlogDetails, 
+  createBlog, 
+  updateBlog, 
+  deleteBlog 
+} = require('../controllers/blog')
+const { isTargetType } = require('../utils/type')
 
 const router = express.Router()
 
@@ -38,10 +45,21 @@ router.get('/api/blog/details', (request, response) => {
 // 创建博客
 router.post('/api/blog', (request, response) => {
   const { title, content } = request.body
-  createBlog(title, content).then(r => {
-    response.send(new SuccessModel('创建成功', r))
+
+  if (!title || !content) {
+    response.send(new FailModel('创建失败, 请检查参数是否完整'))
+    return
+  }
+
+  if (!isTargetType([title, content], 'string')) {
+    response.send(new FailModel('创建失败, title 与 content 只能为 string 类型'))
+    return
+  }
+
+  createBlog(title, content).then(data => {
+    response.send(new SuccessModel('创建成功', data.insertId))
   }).catch(err => {
-    response.send(new FailModel('创建失败'))
+    response.send(new FailModel('创建失败', err.sqlMessage))
     console.error(err)
   })
 })

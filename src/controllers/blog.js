@@ -15,7 +15,8 @@ const getBlogDetails = (id) => {
 }
 
 /**
- * 创建 blog
+ * 创建 `blog`.
+ * 暂未接入用户系统, 所以 `author` 是固定的
  */
 const createBlog = (title, content) => {
   const sql = `
