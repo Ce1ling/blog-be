@@ -32,7 +32,7 @@ router.get('/api/blog/details', (request, response) => {
 
   getBlogDetails(id).then(data => {
     if (data.length) {
-      response.send(new SuccessModel('获取成功', data[0]))
+      response.send(new SuccessModel('获取成功', data))
       return
     }
     response.send(new FailModel('未找到, 请检查 id'))
@@ -86,7 +86,7 @@ router.put('/api/blog', (request, response) => {
     .then(() => getBlogDetails(id))
     .then(data => {
       if (data.length) {
-        response.send(new SuccessModel('更新成功', data[0]))
+        response.send(new SuccessModel('更新成功', data))
         return
       }
       response.send(new FailModel('没有数据被更新, 请检查 id'))
