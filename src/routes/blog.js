@@ -99,10 +99,21 @@ router.put('/api/blog', (request, response) => {
 
 // 删除博客
 router.delete('/api/blog', (request, response) => {
-  deleteBlog(request.query.id).then(r => {
-    response.send(new SuccessModel('删除成功', r))
+  const { id } = request.query
+
+  if (!id) {
+    response.send(new FailModel('删除失败, 请检查参数是否完整'))
+    return
+  }
+
+  deleteBlog(id).then(data => {
+    if (data.affectedRows) {
+      response.send(new SuccessModel('删除成功'))
+      return
+    }
+    response.send(new FailModel('没有数据被删除, 请检查 id 是否正确'))
   }).catch(err => {
-    response.send(new FailModel('删除失败'))
+    response.send(new FailModel('删除失败', err.sqlMessage))
     console.error(err)
   })
 })
