@@ -12,8 +12,11 @@ const { isTargetType } = require('../utils/type')
 const router = express.Router()
 
 // 获取博客列表
-router.get('/api/blog', (_, response) => {
-  getBlogList().then(data => {
+router.get('/api/blog', (request, response) => {
+  const page = Number(request.query.page) || 1
+  const per_page = Number(request.query.per_page) || 10
+
+  getBlogList((page - 1) * per_page, per_page).then(data => {
     response.send(new SuccessModel('获取成功', data))
   }).catch(err => {
     response.send(new FailModel('获取失败'))

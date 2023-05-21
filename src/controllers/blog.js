@@ -3,8 +3,12 @@ const { runSQL } = require('../database/mysql')
 /**
  * 获取 blog 数据
  */
-const getBlogList = () => {
-  return runSQL(`SELECT * FROM blog_list ORDER BY create_at DESC;`)
+const getBlogList = (page, per_page) => {
+  return runSQL(`
+    SELECT * FROM blog_list 
+    ORDER BY create_at DESC 
+    LIMIT ${page}, ${per_page};
+  `)
 }
 
 /**
