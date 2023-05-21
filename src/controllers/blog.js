@@ -1,13 +1,15 @@
-const { runSQL } = require('../database/mysql')
+const { db } = require('../database/mysql')
+const { escape }  = require('mysql')
+
 
 /**
  * 获取 blog 数据
  */
 const getBlogList = (page, per_page) => {
-  return runSQL(`
+  return db.run(`
     SELECT * FROM blog_list 
     ORDER BY create_at DESC 
-    LIMIT ${page}, ${per_page};
+    LIMIT ${escape(page)}, ${escape(per_page)};
   `)
 }
 
@@ -15,7 +17,7 @@ const getBlogList = (page, per_page) => {
  * 获取 blog 详情
  */
 const getBlogDetails = (id) => {
-  return runSQL(`SELECT * FROM blog_list WHERE id=${id};`)
+  return db.run(`SELECT * FROM blog_list WHERE id=${escape(id)};`)
 }
 
 /**
@@ -25,9 +27,9 @@ const getBlogDetails = (id) => {
 const createBlog = (title, content) => {
   const sql = `
     INSERT INTO blog_list (title, content, author, create_at, update_at) 
-    VALUES ('${title}', '${content}', 'L1en', UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
+    VALUES (${escape(title)}, ${escape(content)}, 'L1en', UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
   `
-  return runSQL(sql)
+  return db.run(sql)
 }
 
 /**
@@ -36,17 +38,17 @@ const createBlog = (title, content) => {
 const updateBlog = (id, { title, content }) => {
   const sql = `
     UPDATE blog_list 
-    SET title='${title}', content='${content}', update_at=UNIX_TIMESTAMP()
-    WHERE id=${id};
+    SET title=${escape(title)}, content=${escape(content)}, update_at=UNIX_TIMESTAMP()
+    WHERE id=${escape(id)};
   `
-  return runSQL(sql)
+  return db.run(sql)
 }
 
 /**
  * 删除 blog
  */
 const deleteBlog = (id) => {
-  return runSQL(`DELETE FROM blog_list WHERE id=${id};`)
+  return db.run(`DELETE FROM blog_list WHERE id=${escape(id)};`)
 }
 
 module.exports = {
