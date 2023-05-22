@@ -3,6 +3,14 @@ const { escape }  = require('mysql')
 
 
 /**
+ * 获取 blog 总数
+ * @param {*} key 待查找的字段
+ */
+const getBlogTotal = (key = '*') => {
+  return db.run(`SELECT COUNT(${escape(key)}) FROM blog_list;`)
+}
+
+/**
  * 获取 blog 数据
  */
 const getBlogList = (page, per_page) => {
@@ -52,6 +60,7 @@ const deleteBlog = (id) => {
 }
 
 module.exports = {
+  getBlogTotal,
   getBlogList,
   getBlogDetails,
   createBlog,

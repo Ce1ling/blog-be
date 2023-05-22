@@ -5,7 +5,8 @@ const {
   getBlogDetails, 
   createBlog, 
   updateBlog, 
-  deleteBlog 
+  deleteBlog, 
+  getBlogTotal
 } = require('../controllers/blog')
 const { isTargetType } = require('../utils/type')
 
@@ -16,8 +17,12 @@ router.get('/api/blog', (request, response) => {
   const page = Number(request.query.page) || 1
   const per_page = Number(request.query.per_page) || 10
 
-  getBlogList((page - 1) * per_page, per_page).then(data => {
-    response.send(new SuccessModel('获取成功', data))
+  Promise.all([
+    getBlogList((page - 1) * per_page, per_page), 
+    getBlogTotal()
+  ]).then(([data, [total]]) => {
+    const key = Object.keys(total).find(item => item.match(/COUNT.+/)) || `COUNT('*')`
+    response.send(new SuccessModel('获取成功', { paging: { page, per_page, total: total[key] }, data }))
   }).catch(err => {
     response.send(new FailModel('获取失败'))
     console.error(err)
