@@ -1,9 +1,8 @@
 const express = require('express')
 const routes = require('./routes')
+const { PORT } = require('./config/server')
 
 const app = express()
-
-const PORT = 3211
 
 app.all('*', (request, response, next) => {
   response.header('Access-Control-Allow-Origin', request.headers.origin)
@@ -25,5 +24,5 @@ app.listen(PORT, (error) => {
   if (error) {
     throw new Error(`Server running fialure, reason: ${error}`)
   }
-  console.log(`********** Server running on "http://localhost:${PORT}" **********`)
+  console.log(`********** Server running at "http://localhost:${PORT}" **********`)
 })
